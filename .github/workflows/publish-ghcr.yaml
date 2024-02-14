@@ -10,8 +10,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
+    - name: Get tag
+      id: get_tag
+      uses: ./.github/actions/get-tag
+      with:
+        context: ${{ github.event_name }}
+        pr_number: ${{ github.event.pull_request.number }}
+        ref: ${{ github.ref_name }}
+
     - name: Build and push the image
       run: |
           echo "${{ secrets.GH_PAH }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE }}:${{ steps.get_tag.outputs.tag }} .
-          docker push ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE }}:${{ steps.get_tag.outputs.tag }}
+          echo "IMAGE=products" >> $GITHUB_ENV
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ env.IMAGE }}:${{ steps.get_tag.outputs.tag }} .
+          docker push ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/${{ env.IMAGE }}:${{ steps.get_tag.outputs.tag }}
+   
