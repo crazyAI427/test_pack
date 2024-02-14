@@ -5,4 +5,4 @@ WORKDIR /app
 COPY entrypoint.sh actions .
 RUN chmod +x entrypoint.sh
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT [ "/app/entrypoint1.sh" ]
